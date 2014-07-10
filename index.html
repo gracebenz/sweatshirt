@@ -1,0 +1,108 @@
+<!--Grace Benz
+  Thinkful challenge
+  7/10/14 -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+  <script>
+
+  /* Get lat and lon of current user */
+  function showlocation() {
+    navigator.geolocation.getCurrentPosition(callback);
+  }
+     
+  function callback(position) {
+    var lat = position.coords.latitude;
+    var lon = position.coords.longitude;
+    weatherUrl(lat, lon)
+  }
+
+  function weatherUrl(lat, lon) {
+    var script = document.createElement('script');
+    script.src = "http://api.wunderground.com/api/63cd7cdddbf88f74/conditions/q/" + lat + "," + lon + ".json?callback=determineWearability";
+    document.body.appendChild(script);
+  }
+
+  /* See if they already filled out preferences */
+  function checkCookie() {
+    var preferences = getTempCookie("preferences");
+    if (preferences == "" || preferences == null) {
+      window.location = "preferences.html";
+    } else {
+      determineWearability(); 
+    } 
+  }
+
+  function getTempCookie() {
+    var cookies = document.cookie.split(';');
+    //because of this hard coding, you can only enter numbers between 10 and 99 
+    var lowTemp = (cookies[cookies.length - 1]).slice(13, 15); //hard coded location of low temp
+    var highTemp = (cookies[cookies.length - 1]).slice(16, 18); //of high temp
+    return lowTemp + "," + highTemp;
+  }
+
+  function determineWearability(content) {
+    var temps = getTempCookie().split(',');
+    var low = temps[0];
+    var high = temps[1];
+    var actual = (content["current_observation"]["feelslike_f"]);
+    
+    //not inclusive
+    if (actual > low && actual < high){
+      document.getElementById('yes').className="text"
+    } else if (actual < low ){
+      document.getElementById('tooCold').className="text"
+    } else {
+      document.getElementById('tooHot').className="text"
+    }
+
+    document.getElementById('temp').innerHTML = actual
+    document.getElementById('temp').className = "text"
+
+    document.getElementById('button').className="hidden"
+  }
+
+  </script>
+  <style type="text/css">
+
+    .text {
+      text-align: center;
+      vertical-align: middle;
+      display: block;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .center {
+      display: block;
+      margin: auto;
+      width:25%;
+      font-size: xx-large;
+    }
+
+    #button {
+      width: 100%;
+    }
+
+  </style>
+</head>
+<body onload="checkCookie()">
+  <header align="right">
+    <a href="preferences.html">Preferences</a>
+  </header>
+  <div class="center">
+    <input type="button" value="Should I wear a sweatshirt today?" onclick="showlocation()" id="button"/> 
+
+    <span id="temp" class="text hidden"></span>
+  </br>
+    <span id="yes" class="text hidden">OH YEAH!!!</span>
+    <span id="tooHot" class="text hidden">Too hot. Do you want to sweat all day?</span>
+    <span id="tooCold" class="text hidden">Too cold. Try your winter parka.</span>
+  </div>
+
+</body>
+</html>

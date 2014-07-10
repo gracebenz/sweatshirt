@@ -1,0 +1,37 @@
+<!--Grace Benz
+  Thinkful challenge
+  7/10/14 -->
+
+<!DOCTYPE html>
+<html>
+<head>
+<script>
+
+function getTempFormData() {
+	var lowTemp = document.getElementById('lowTemp').value;
+	var highTemp =document.getElementById('highTemp').value;
+	setCookie(lowTemp, highTemp, 365); //preferences will expire after a year
+}
+
+function setCookie(lowTemp, highTemp, expDays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (expDays*24*60*60*1000));
+    var expires = "expires=" + d.toGMTString();
+    document.cookie = "preferences" + "=" + lowTemp + "," + highTemp + "; " + expires;
+
+    document.getElementById('lowTemp').value = lowTemp;
+    document.getElementById('highTemp').value = highTemp;
+
+    window.location = "index.html"; //back to homepage after cookie is set
+}
+
+</script>
+</head>
+<div>Enter the bounds for temperatures that you think are appropriate to wear a sweatshirt (fahrenheit)</div>
+<form name="tempForm" action="javascript:getTempFormData()">
+	<!--Doesn't check to make sure that lower temp is less than higher temp-->
+	Lowest temperature: <input id="lowTemp" type="number" name="lowTemp" min="10" max="99" required><br>
+	Highest temperature: <input id="highTemp" type="number" name="highTemp" min="10" max="99" required><br>
+	<input name="Submit"  type="submit" value="Submit" action="index.html"/>
+</form>
+</html>
