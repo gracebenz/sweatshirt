@@ -37,10 +37,15 @@
 
   function getTempCookie() {
     var cookies = document.cookie.split(';');
-    //because of this hard coding, you can only enter numbers between 10 and 99 
-    var lowTemp = (cookies[cookies.length - 1]).slice(13, 15); //hard coded location of low temp
-    var highTemp = (cookies[cookies.length - 1]).slice(16, 18); //of high temp
-    return lowTemp + "," + highTemp;
+    //check to make sure the cookie exists
+    if (cookies[cookies.length - 1].slice(1,12)!="preferences") {
+      return null;
+    } else {
+      //because of this hard coding, you can only enter numbers between 10 and 99 
+      var lowTemp = (cookies[cookies.length - 1]).slice(13, 15); //hard coded location of low temp
+      var highTemp = (cookies[cookies.length - 1]).slice(16, 18); //of high temp
+      return lowTemp + "," + highTemp;
+    }
   }
 
   function determineWearability(content) {
